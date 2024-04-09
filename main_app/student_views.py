@@ -16,10 +16,48 @@ from .models import *
 
 def student_home(request):
     student = get_object_or_404(Student, admin=request.user)
+    
+    
+    
     total_subject = Subject.objects.filter(course=student.course).count()
     subs=Subject.objects.filter(course=student.course)
     total_attendance = AttendanceReport.objects.filter(student=student).count()
     total_present = AttendanceReport.objects.filter(student=student, status=True).count()
+    student = request.user.student
+
+    # Retrieve all assignments submitted by the current student
+    submitted_assignments = AssignmentSubmission.objects.filter(student=student)
+
+    # Get the IDs of submitted assignments
+    submitted_assignment_ids = [submission.assignment.id for submission in submitted_assignments]
+
+    # Retrieve all assignments associated with subjects the student is enrolled in
+    enrolled_subjects = student.course.subject_set.all()
+    assignments_to_display = Assignment.objects.filter(subject__in=enrolled_subjects)
+
+    # Filter out assignments that the student has already submitted
+    assignments_to_display = assignments_to_display.exclude(id__in=submitted_assignment_ids)
+
+    # Filter out assignments that are past their due date
+    current_time = datetime.now()
+    assignments_to_display = assignments_to_display.filter(due_date__gte=current_time)
+    remaining_assignments_count = assignments_to_display.count()
+    
+    student = get_object_or_404(Student, admin=request.user)
+    results = StudentResult.objects.filter(student=student).order_by('-created_at')
+    latest_result = results.first() if results.exists() else None
+    
+    # Get the subject name associated with the latest result
+    latest_subject_name = latest_result.subject.name if latest_result else None
+    
+    # Get the previous result if available
+    previous_result = None
+    if len(results) > 1:
+        previous_result = results[1]
+    previous_subject_name=previous_result.subject.name
+    
+    
+    
     if total_attendance == 0:  # Don't divide. DivisionByZero
         percent_absent = percent_present = 0
     else:
@@ -49,6 +87,19 @@ def student_home(request):
         'data_name': subject_name,
         'page_title': 'Student Homepage',
         'subs':subs,
+        
+        'remaining_assignments_count': remaining_assignments_count,
+         'results': results,
+        'latest_result': latest_result,
+        'latest_subject_name': latest_subject_name,
+        'previous_subject_name':previous_subject_name,
+        'previous_result': previous_result,
+       
+        
+        'results': results,
+        
+        
+
 
     }
     return render(request, 'student_template/home_content.html', context)
@@ -201,9 +252,23 @@ def student_view_notification(request):
 
 def student_view_result(request):
     student = get_object_or_404(Student, admin=request.user)
-    results = StudentResult.objects.filter(student=student)
+    results = StudentResult.objects.filter(student=student).order_by('-created_at')
+    latest_result = results.first() if results.exists() else None
+    
+    # Get the subject name associated with the latest result
+    latest_subject_name = latest_result.subject.name if latest_result else None
+    
+    # Get the previous result if available
+    previous_result = None
+    if len(results) > 1:
+        previous_result = results[1]
+    previous_subject_name=previous_result.subject.name
     context = {
         'results': results,
+        'latest_result': latest_result,
+        'latest_subject_name': latest_subject_name,
+        'previous_subject_name':previous_subject_name,
+        'previous_result': previous_result,
         'page_title': "View Results"
     }
     return render(request, "student_template/student_view_result.html", context)
@@ -228,12 +293,34 @@ def student_view_assignment(request):
     # Filter out assignments that are past their due date
     current_time = datetime.now()
     assignments_to_display = assignments_to_display.filter(due_date__gte=current_time)
-
+    remaining_assignments_count = assignments_to_display.count()
+    
     context = {
+        'remaining_assignments_count': remaining_assignments_count,
         'page_title': "Submit Assignments",
         'assignments': assignments_to_display
     }
     return render(request, "student_template/student_view_assignment.html", context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def student_submit_assignment(request, assignment_id):
     # Retrieve the assignment object based on the provided assignment_id
@@ -253,7 +340,7 @@ def student_submit_assignment(request, assignment_id):
             return redirect('student_view_assignment')
         else:
             messages.error(request, "Please select a file to upload.")
-            return redirect('student_submit_assignment', assignment_id=assignment.id)
+            return redirect('student_view_assignment')
 
     context = {
         'page_title': "Submit Assignment",

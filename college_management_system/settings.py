@@ -161,13 +161,12 @@ EMAIL_PORT = 587
 
 # Provide your Gmail email address and password for authentication
 EMAIL_HOST_USER = 'testingcms2080@gmail.com'  # Update with your Gmail email address
-EMAIL_HOST_PASSWORD = 'testing@123'  # Update with your Gmail password
+EMAIL_HOST_PASSWORD = 'ecihdsvehncelnic'  # Update with your Gmail password
 
 
-EMAIL_HOST_USER = os.environ.get('EMAIL_ADDRESS') 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+
 EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = "School Management System <admin@admin.com>"
+
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

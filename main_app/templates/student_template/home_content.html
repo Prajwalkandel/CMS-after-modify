@@ -2,6 +2,9 @@
 {% load static %}
 {% block page_title %}{{page_title}}{% endblock page_title %}
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
   <style>
     .table {
@@ -19,7 +22,132 @@
     .table th {
       background-color: #f2f2f2; /* Header background color */
     }
+    .popup {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 400px; /* Set maximum width */
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #666;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup-content h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.popup-content p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.popup-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popup-content button:hover {
+    background-color: #0056b3;
+}
+
+ 
+
+
+
+
+
+
+
+
+
   </style>
+
+
+<div id="latest_subject_data" style="display: none;">
+  <span id="latest_subject_name">{{ latest_subject_name }}</span>
+  <span id="latest_subject_created_date">{{ latest_result.created_at }}</span>
+</div>
+
+<div id="popup" class="popup">
+  <span class="close" onclick="closePopup()">&times;</span>
+  <p id="popupContent"></p>
+  <button onclick="closePopup()">Read</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="examResultModal" tabindex="-1" role="dialog" aria-labelledby="examResultModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="examResultModalLabel">Unsumitted Assignment Reminder</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{remaining_assignments_count}}
+        Unfinished Assignment are <span id="totalMarksDisplay"></span> Pending! <br>
+        <a href="{% url 'student_view_assignment' %}">  Click here  to view</a> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <section class="content">
     <div class="container-fluid">
@@ -40,6 +168,26 @@
                     {# <a href="student_view_attendance.html" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a> #}
                 </div>
             </div>
+
+
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                  <div class="inner"  style=" background-color: rgba(224,240,100,0.7 )" >
+                      <h3> {{ remaining_assignments_count}} </h3>
+
+                      <p>Remaining Assignment</p>
+                  </div>
+                  <div class="icon">
+                    <i class="nav-icon fas fa-calendar-alt"></i>
+                  </div>
+                  <a class="small-box-footer" href="{% url 'student_view_assignment'  %}"> More Info <i class="fas fa-arrow-circle-right"></i></a>
+                  {# <a href="student_view_attendance.html" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a> #}
+              </div>
+          </div>
+
+            
+
             <!-- ./col -->
             {% comment %} <div class="col-lg-3 col-6">
                 <!-- small box -->
@@ -54,7 +202,8 @@
                     </div>
                     {# <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> #}
                 </div>
-            </div> {% endcomment %}
+            </div> 
+            {% endcomment %}
             <!-- ./col -->
             {% comment %} <div class="col-lg-3 col-6">
                 <!-- small box -->
@@ -88,8 +237,15 @@
                     {# <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> #}
                 </div>
             </div>
+
+            
             <!-- ./col -->
         </div>
+
+        
+         
+      
+    
         <div class="row">
             <div class="col-lg-6">
            
@@ -260,12 +416,79 @@ var barChart = new Chart(barChartCanvas, {
 })
 
   </script>
+
+
+<!-- Your HTML code -->
+
+<script>
+  $(document).ready(function() {
+
+
+     
+      // Get the value of total_marks from your template and convert it to a JavaScript variable
+      var remaining_assignments_count =  {{remaining_assignments_count}};
+
+      // Check if totalMarks is greater than 1
+      if (remaining_assignments_count >= 1) {
+          // Show the modal dialog
+          $('#examResultModal').modal('show');
+          // Display the totalMarks value inside the modal
+          $('#totalMarksDisplay').text(totalMarks);
+
+
+
+          
+      }
+
+    
+  });
+
+
+
+</script>
+
+<script>
+// Function to show the popup dialog with latest subject name and creation date
+// Function to show the popup dialog with latest subject name and creation date
+function showPopup() {
+    // Get the latest subject name and creation date from the hidden div
+    const latestSubjectName = document.querySelector("#latest_subject_name").textContent.toUpperCase();
+    const latestSubjectCreatedDate = document.querySelector("#latest_subject_created_date").textContent;
+
+    // Construct the message for the popup
+    const message = ` ${latestSubjectName}\nResult published at: ${latestSubjectCreatedDate}`;
+
+    // Set the message content in the popup dialog
+    const popupContentElement = document.getElementById("popupContent");
+    popupContentElement.textContent = message;
+
+    // Display the popup dialog
+    const popup = document.getElementById("popup");
+    popup.style.display = "block";
+}
+
+// Function to close the popup dialog
+function closePopup() {
+    const popup = document.getElementById("popup");
+    popup.style.display = "none";
+}
+
+// Call showPopup function when the window loads
+window.onload = function() {
+    showPopup();
+};
+
+
+
+
+</script>
+
         <!-- The core Firebase JS SDK is always required and must be listed first -->
         <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-app.js"></script>
 
         <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
-        <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-analytics.js"></>
         <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-messaging.js"></script>
     
     

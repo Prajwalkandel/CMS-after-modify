@@ -4,6 +4,40 @@
 
 {% block content %}
 
+<style>
+    .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -21,8 +55,8 @@
            <tr>
                <th>ID</th>
                <th>Subject</th>
-               <th>Test</th>
-               <th>Exam</th>
+               <th>TInternal</th>
+               <th>Final Exam</th>
                <th>Total</th>
         </tr>
         {% for result in results %}
@@ -40,5 +74,45 @@
             </div>
         </div>
     </div>
+
+    
 </section>
+
+{% block custom_js %}
+
+<script>
+  
+// Function to show the comparison result in a pop-up dialog
+function showComparison() {
+    const latestSubjectName = document.querySelector("#latest_subject_name").textContent;
+    const previousSubjectName = document.querySelector("#previous_subject_name").textContent;
+    
+    // Function to compare two names
+    function compareNames(name1, name2) {
+        if (name1 === name2) {
+            return "The names are the same.";
+        } else {
+            return "The names are different.";
+        }
+    }
+
+    const comparisonResult = compareNames(latestSubjectName, previousSubjectName);
+    const popup = document.getElementById("popup");
+    const comparisonResultElement = document.getElementById("comparisonResult");
+    comparisonResultElement.textContent = comparisonResult;
+    popup.style.display = "block";
+}
+
+// Function to close the pop-up dialog
+function closePopup() {
+    const popup = document.getElementById("popup");
+    popup.style.display = "none";
+}
+
+// Call showComparison function when the page loads
+window.onload = showComparison;
+
+
+</script>
+{% endblock custom_js %}
 {% endblock content %}

@@ -291,6 +291,9 @@ def manage_staff(request):
 #     }
 #     return render(request, "hod_template/manage_student.html", context)
 
+
+
+#Filter algorithm
 def manage_student(request):
     students = CustomUser.objects.filter(user_type=3)
     courses = Course.objects.all()
