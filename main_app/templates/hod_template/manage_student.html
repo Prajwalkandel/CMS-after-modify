@@ -1,0 +1,215 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<style>
+    #search{
+        background-color: rgba(224,242,190,0.7 );
+    }
+</style>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12" >
+                <div class="card" style=" background-color: rgba(224,242,240,0.7 );">
+                    <div class="card-header" >
+                        <div class="card-header  py-3" id="search" style=" background-color: rgba(224,242,240,0.7 );">
+                            <div class="row" style=" background-color: rgba(224,242,240,0.7 );">
+                                {% comment %} <div class="col-md-6">
+                                    <!-- Course select -->
+                                    <div class="form-group mb-2">
+                                        <form id="filterForm" method="post">
+                                            {% csrf_token %}
+                                            <label for="courseSelect" class="mb-0">Select Course:</label>
+                                            <select class="form-control form-control-sm" id="courseSelect" name="course_id">
+                                                <option value="">-- Select Course --</option>
+                                                {% for course in courses %}
+                                                    <option value="{{ course.id }}">{{ course.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="batchSelect" class="mb-0">Select Batch:</label>
+                                            <select class="form-control form-control-sm" id="batchSelect" name="batch_id">
+                                                <option value="">-- Select Batch --</option>
+                                                {% for batch in batches %}
+                                                    <option value="{{ batch.id }}">From {{ batch.start_year|date:"Y" }} to {{ batch.end_year|date:"Y" }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </form>
+                                    </div>
+                                </div> {% endcomment %}
+                                <div class="col-md-6">
+                                    <!-- Course select -->
+                                    <div class="form-group mb-2">
+                                        <form id="filterForm" method="post">
+                                            {% csrf_token %}
+                                            <label for="courseSelect" class="mb-0">Select Course:</label>
+                                            <select class="form-control form-control-sm" id="courseSelect" name="course_id">
+                                                <option value="">-- Select Course --</option>
+                                                {% for course in courses %}
+                                                    <option value="{{ course.id }}">{{ course.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="batchSelect" class="mb-0">Select Batch:</label>
+                                            <select class="form-control form-control-sm" id="batchSelect" name="batch_id">
+                                                <option value="">-- Select Batch --</option>
+                                                {% for batch in batches %}
+                                                    <option value="{{ batch.id }}">From {{ batch.start_year|date:"Y" }} to {{ batch.end_year|date:"Y" }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit"  style="margin-top: 10px;" class="btn btn-primary">Search</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <!-- Search box -->
+                                    <form class="form-inline float-right">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search...">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>S.N</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Gender</th>
+                                    <th>Course</th>
+                                    <th>Image</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{student.last_name}}, {{student.first_name}}</td>
+                                    <td>{{student.email}}</td>
+                                    <td>{{student.gender}}</td>
+                                    <td>{{student.student.course.name}}</td>
+                                    <td>
+                                        {% if student.profile_pic == ""  %}
+                                        No Image
+                                        {% else %}
+                                        <img class="img img-fluid mb-2" height="56" width="56"
+                                            src="{{student.profile_pic}}" alt="">
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td><a href="{% url 'edit_student' student.student.id %}" class="btn btn-info">Edit</a> -
+                                        <a href="{% url 'delete_student' student.student.id %}" class="btn btn-danger" onclick="return confirm('Are you sure about this ?')">Delete</a>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block custom_js %}
+<script>
+    function binarySearch() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('example2');
+        tr = table.getElementsByTagName('tr');
+
+        // Loop through all table rows
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[1]; // Index 1 corresponds to the student name column
+            if (td) {
+                var txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    }
+
+    // Attach binary search function to the keyup event of the search input
+    document.getElementById('searchInput').addEventListener('keyup', binarySearch);
+</script>
+
+{% endblock custom_js %} 
+
+
+{% comment %} {% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{page_title}}</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Gender</th>
+                                    <th>Course</th>
+                                    <th>Image</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{student.first_name}} {{student.last_name}}</td>
+                                    <td>{{student.email}}</td>
+                                    <td>{{student.gender}}</td>
+                                    <td>{{student.student.course.name}}</td>
+                                    <td>
+                                        {% if student.profile_pic == ""  %}
+                                        No Image
+                                        {% else %}
+                                        <img class="img img-fluid mb-2" height="56" width="56"
+                                            src="{{student.profile_pic}}" alt="">
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td><a href="{% url 'edit_student' student.student.id %}" class="btn btn-info">Edit</a> -
+                                        <a href="{% url 'delete_student' student.student.id %}" class="btn btn-danger" onclick="return confirm('Are you sure about this ?')">Delete</a>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %} {% endcomment %}

@@ -1,0 +1,51 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-dark" style=" background-color: rgba(224,242,240 );">
+                    <div class="card-header" style=" background-color: rgba(224,242,190 );">
+                        <h3 class="card-title" style="color: black;">{{page_title}}</h3>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group table">
+                            <table class="table table-bordered thead-dark">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Questions</th>
+                                    <th>Due Date</th>
+                                    <th>Action</th>
+                                </tr>
+                                <form action="{% url 'give_assignment' %}" method="POST">
+                                    {% csrf_token %}
+                                    <tr>
+                                        <td>
+                                            <select name="subject_id" style="background-color: transparent;">
+                                                {% for subject in subjects %}
+                                                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td><textarea name="description" rows="2" cols="70" style="background-color: transparent;"></textarea></td>
+                                        <td><input name ='due_date' type="date" style="background-color: transparent;"></td>
+                                        <td><input name="submit" type="submit" value="Upload"></td>
+                                    </tr>
+                                </form>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,75 @@
+<style>
+    body {
+      background-color: rgba(224, 242, 241, 0.9);
+    }
+    #datetime {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      font-size: 48px;
+      color: #2e7d32;
+      border-radius: 20px; /* Adjust the value to change the amount of curvature */
+      background-color: rgba(
+        224,
+        242,
+        241,
+        0.9
+      ); /* Semi-transparent background */
+      border-color: rgba(224, 242, 241, 1);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  
+      /* Subtle box-shadow for depth effect */
+      transition: background-color 0.3s ease; /* Smooth transition effect */
+    }
+    #datetime:hover {
+      background-color: rgba(255, 255, 255, 0.2); /* Change color on hover */
+    }
+    #current-time {
+      margin-right: 10px;
+    }
+    #date-day {
+      font-size: 16px;
+      color: #2e7d32;
+      display: none; /* Initially hidden */
+    }
+    #datetime:hover #date-day {
+      display: block; /* Show on hover */
+      margin-top: 5px; /* Adjust margin to position below */
+    }
+  
+    body {
+      background-image: url("//media/pexels-pixabay-256490.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+  
+  <body>
+    <div id="datetime">
+      <div id="current-time"></div>
+      <div id="date-day"></div>
+    </div>
+  
+    <script>
+      function updateTime() {
+        var now = new Date();
+        var time = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        var date = now.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "long",
+          weekday: "long",
+        });
+        document.getElementById("current-time").textContent = time;
+        document.getElementById("date-day").textContent = date;
+      }
+      updateTime(); // Update initially
+      setInterval(updateTime, 1000); // Update every second
+    </script>
+  </body>
+  

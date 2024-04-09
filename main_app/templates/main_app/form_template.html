@@ -1,0 +1,44 @@
+<style>
+  
+    .form-control{
+        background-color:transparent;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 10px rgba(0, 0, 255, 0.5); /* Adjust the shadow color and size as needed */
+        background-color:transparent;
+    }
+</style>
+
+<form role="form" method="POST" enctype="multipart/form-data"   style="background-color: rgba(224, 242, 241, 0.9)">
+    {% csrf_token %}
+    <div class="card-body" >
+
+
+        {% for field in form  %}
+        <div class="form-group " >
+            {{field.errors}}
+            {{field.label_tag}}
+            {{field}}
+          
+
+        </div>
+        
+        {% endfor %}
+
+
+
+
+    </div>
+    <!-- /.card-body -->
+
+    <div class="card-footer"   style="background-color: rgba(224, 242, 241, 0.9)">
+        <button type="submit" class="btn btn-success btn-block" style="background-color: rgba(224, 242, 200); border: none; color: black ; border-radius: 30px;">
+            {% if button_text %}
+            {{button_text}}
+            {% else %}
+            Submit
+            {% endif %}
+
+        </button>
+    </div>
+</form>

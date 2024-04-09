@@ -1,0 +1,78 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+
+<style>
+   #add_course{
+   
+        /* Align the button to the center */
+        margin: 0 auto;
+        margin-bottom: 5px;
+        display: block;
+        width: 200px;
+        background-color: #25c94b; 
+    }
+</style>
+<section class="content" style="background-color: rgba(224,242,241,0.9);">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12" style="background-color: rgba(224,242,241,0.9);">
+                <!-- general form elements -->
+                <div class="card card-dark" style="background-color: rgba(224,242,241,0.9); ">
+                    <div class="card-header" style=" background-color: rgba(224,242,190,0.7 );">
+                        <h3 class="card-title" style="color: black;">{{ page_title }}</h3>
+                    </div>
+
+                    {% if course_already_exists %}
+                    <div class="alert alert-danger" role="alert">
+                        Course already exists!
+                    </div>
+                    {% endif %}
+
+                    <form id="add_course_form" method="post" style="margin:10px;">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary" id="add_course" >Add Course</button>
+                    </form>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById('add_course_form').onsubmit = function() {
+        var courseNameField = document.getElementById('id_name');
+        var courseName = courseNameField.value.trim();
+        var errorMessage = document.querySelector('.alert-danger');
+
+        if (errorMessage) {
+            errorMessage.parentNode.removeChild(errorMessage);
+        }
+
+        if (!courseName || !courseName.match(/^[a-zA-Z]/)) {
+            // Display error message for non-letter start
+            var errorMessageNonLetter = document.createElement('div');
+            errorMessageNonLetter.className = 'alert alert-danger';
+            errorMessageNonLetter.textContent = 'Course name must start with a letter.';
+            courseNameField.parentNode.insertBefore(errorMessageNonLetter, courseNameField.nextSibling);
+            // Prevent form submission
+            return false;
+        } else if (courseName.length < 3) {
+            // Display error message for length less than 3
+            var errorMessageShortLength = document.createElement('div');
+            errorMessageShortLength.className = 'alert alert-danger';
+            errorMessageShortLength.textContent = 'Course name must be at least 3 characters long.';
+            courseNameField.parentNode.insertBefore(errorMessageShortLength, courseNameField.nextSibling);
+            // Prevent form submission
+            return false;
+        }
+        return true;
+    };
+</script>
+
+{% endblock content %}

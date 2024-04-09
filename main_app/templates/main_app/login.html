@@ -1,0 +1,188 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>C.M.S | Log In</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/fontawesome-free/css/all.min.css' %}"
+    />
+    <!-- Ionicons -->
+    <link
+      rel="stylesheet"
+      href="{% static 'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' %}"
+    />
+    <!-- icheck bootstrap -->
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}"
+    />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}" />
+    <!-- Google Font: Source Sans Pro -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700"
+      rel="stylesheet"
+    />
+    <!-- Google Recaptcha     -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+      #try {
+        background-color: #e0f2f1;
+        font-family: "Poppins", sans-serif;
+      }
+
+      #login_design {
+        border-radius: 10px;
+        border: 5px solid #e0f2f1;
+        transition: box-shadow 0.3s ease;
+        background-color: rgba(
+          224,
+          242,
+          241,
+          0.9
+        ); /* Pale green with 90% opacity */
+        opacity: 0.7; /* Overall transparency */
+        transition: box-shadow 0.3s ease;
+        height: 60vh;
+      }
+      #login_design:hover {
+        box-shadow: 0 0 10px 3px rgba(130, 224, 208, 0.9);
+      }
+
+      #form-control {
+        background-color: transparent;
+        width: 110%;
+        border: none;
+        outline: none;
+        border: 2px solid rgba(225, 225, 225, 0.7);
+        border-radius: 40px;
+      }
+      #email {
+        border: none;
+        position: absolute;
+        left: 88%;
+        top: 3px;
+      }
+
+      #mb-1 {
+        color: cadetblue;
+      }
+
+      #login_logo {
+        text-align: center;
+        font-size: 36px;
+        color: #006400;
+        font-weight: bold;
+      }
+      .input-group,
+      .mb-3 {
+        color: #006400;
+      }
+
+      /* Target the reCAPTCHA widget */
+    </style>
+  </head>
+
+  <body class="hold-transition login-page" id="try">
+    <div>
+      <!-- Include the date and time display -->
+      {% include "main_app/date_time.html" %}
+    </div>
+    <div class="login-box" style="max-width: 450px; width: 80%">
+      <!-- Date and time start   -- date and time end -->
+
+      <!-- /.login-logo -->
+      <div class="card" style="background-color: #c7eed8">
+        <div class="card-body login-card-body" id="login_design">
+          <div id="login_logo">
+            <p>Login</p>
+          </div>
+          <!-- <p class="login-box-msg">Sign in to start your session</p> -->
+          {% if messages %}
+          <div class="col-12">
+            {% for message in messages %} {% if message.tags == 'error' %}
+            <div class="alert alert-danger text-center">{{message }}</div>
+            {% endif %} {% endfor %}
+          </div>
+          {% endif %}
+          <form action="doLogin/" method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <input
+                required
+                type="email"
+                name="email"
+                class="form-control"
+                placeholder="Email"
+                id="form-control"
+              />
+              <div class="input-group-append" id="email">
+                <div class="input-group-text" id="email">
+                  <span class="fas fa-envelope"> </span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input
+                required
+                type="password"
+                name="password"
+                class="form-control"
+                placeholder="Password"
+                id="form-control"
+              />
+              <div class="input-group-append">
+                <div class="input-group-text" id="email">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3" id="g-recaptcha" width 200px>
+              <div
+                style="width: 100x"
+                class="g-recaptcha"
+                data-sitekey="6LfswtgZAAAAAJ7bhwqZZtDpBsc75ekH6FWA4Fnt"
+              ></div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="icheck-primary">
+                  <input type="checkbox" id="remember" />
+                  <label for="remember"> Remember Me </label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" class="btn btn-success btn-block">
+                  Log In
+                </button>
+              </div>
+
+              <!-- /.col -->
+            </div>
+          </form>
+
+          <p class="mb-1">
+            <a href="{% url 'password_reset' %}" id="mb-1">Forgot Password?</a>
+          </p>
+        </div>
+        <!-- /.login-card-body -->
+      </div>
+    </div>
+    <!-- /.login-box -->
+
+    <!-- jQuery -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- AdminLTE App -->
+    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+  </body>
+</html>

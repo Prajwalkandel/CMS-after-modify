@@ -1,0 +1,55 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-dark"  style=" background-color: rgba(224,240,239,0.7 )">
+                    <div class="card-header"  style=" background-color: rgba(224,240,190,0.7 )">
+                        <h3 class="card-title" style="color: black;">{{ page_title }}</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <div class="form-group table">
+                            <table class="table table-bordered thead-dark">
+                                <thead>
+                                    <tr>
+                                        <th>Uploaded At</th>
+                                        <th>Due Date</th>
+                                        <th>Assignment</th>
+                                        <th>Upload file</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assignment in assignments %}
+                                    <tr>
+                                        <td>{{ assignment.updated_at }}</td>
+                                        <td>{{ assignment.due_date }}</td>
+                                        <td>{{ assignment.description }}</td>
+                                        <td>
+                                            <form action="{% url 'student_submit_assignment' assignment_id=assignment.id %}" enctype="multipart/form-data" method="POST">
+                                                {% csrf_token %}
+                                                <input type="file" name="submission_file" accept=".pdf,.doc,.docx">
+                                        </td>
+                                        <td>
+                                            <input name="submit" type="submit" value="Upload">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+{% block content %}
+
+<style>
+    .table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+  
+    .table th,
+    .table td {
+      border: 1px solid #ddd; /* Border style */
+      padding: 8px; /* Padding for content */
+      text-align: left; /* Text alignment */
+    }
+  
+    .table th {
+      background-color: #f2f2f2; /* Header background color */
+    }
+  </style>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-dark">
+                    <div class="card-header" style=" background-color: rgba(224,242,190,0.7 )">
+                        <h3 class="card-title" style="color: black;">{{ page_title }}</h3>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body" style=" background-color: rgba(224,242,240,0.7 )">
+                        <div class="form-group">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th scope="col">S.N</th>
+                                    <th scope="col">Course</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for course in courses %}
+                                  <tr>
+                                    <td scope="row">{{ forloop.counter }}</td>
+                                    <td><a href="{% url 'get_result' course.id %}" class="btn btn-info">{{course.name}}</a></td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                            
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+

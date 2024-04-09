@@ -1,0 +1,96 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-dark">
+                    <div class="card-header" style=" background-color: rgba(224,242,190 ); color: black; ">
+                        <h3 class="card-title" style="color: black;">{{page_title}}</h3>
+                    </div>
+
+
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body" style=" background-color: rgba(224,242,240 ); color: black; border: none;">
+
+
+
+                       
+
+
+                        <div class="form-group table">
+                            <table class="table thead-dark">
+                                <thead>
+                                  <tr>
+                                    <th>Assignment Title</th>
+                                    <th>Submitted by</th>
+                                    <th>Submission Date</th>
+                               
+                                    <th>View Submission</th>
+                                  
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for submission in submitted_assignments %}
+                                  <tr data-submission-id="{{ submission.id }}">
+                                    <td>{{ submission.assignment.description }}</td>
+                                    <td>{{ submission.student.admin.get_full_name }}</td>
+                                    <td>{{ submission.submission_date }}</td>
+                                    
+                                    <td>{% if submission.submission_file %}
+                                        <button class="btn btn-success"><a class="text-white" href="{{ submission.submission_file.url }}" target="_blank">View</a></button>
+                                      {% else %}
+                                        <em>No file submitted</em>
+                                      {% endif %}</td>
+
+                                    <td><button class="remove-submission-btn btn btn-danger" >Remove</button></td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                              
+                        </div>
+                   
+                    </div>
+    
+                </div>
+                <!-- /.card -->
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock content %}
+
+{% block custom_js %}
+<script>
+    // Send AJAX request to remove assignment submission
+    $(document).on('click', '.remove-submission-btn', function () {
+        var submissionId = $(this).closest('tr').data('submission-id');
+        $.ajax({
+            url: '{% url "remove_submission" %}',
+            method: 'POST',
+            data: {
+                'submission_id': submissionId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                // Reload the page after successful removal
+                location.reload();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
+{% endblock %}
